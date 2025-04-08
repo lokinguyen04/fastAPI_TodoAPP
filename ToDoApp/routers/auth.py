@@ -1,3 +1,6 @@
+import os
+from dotenv import load_dotenv
+from pathlib import Path
 from datetime import timedelta, datetime, timezone
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -16,8 +19,12 @@ router = APIRouter(
     tags=['auth']
 )
 
-SECRET_KEY = 'eu9GQQsa1YQ0MxIS4/6Ss2htSEv0jfSRcQOMa59VGMQHJiqva/Lxii5edqI0V8za'
-ALGORITHM = 'HS256'
+env_path = Path(__file__).resolve().parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
